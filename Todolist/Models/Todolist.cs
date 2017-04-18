@@ -16,30 +16,23 @@ namespace Todolist.Models
             return TodolistHelper.ExecuteReader("select * from todolist where id=" + i);
         }
 
-        public static Object Insert(Object data)
+        public static Object Insert(Object json)
         {
-            List<TodolistItem> list = JsonConvert.DeserializeObject<List<TodolistItem>>(data.ToString());
-            var i = 0;
-            foreach (TodolistItem item in list)
-            {
-                i += TodolistHelper.ExecuteNonQuery("insert into todolist(title,complete) values(" + "'" + item.Title +
-                                                    "'" + "," + item.Complete + ")");
-            }
-            return i;
+            List<Object> data = JsonConvert.DeserializeObject<List<Object>>(json.ToString());
+            TodolistHelper.ExecuteNonQuery("insert into todolist(title,complete) values('" + data[0] + "',0)");
+            return TodolistHelper.ExecuteScalar("select INCREASE_SEQUENCE.currval from dual");
         }
 
-        public static Object Dalete(Object data)
+        public static Object Dalete(Object json)
         {
-            List<int> list = JsonConvert.DeserializeObject<List<int>>(data.ToString());
-            return TodolistHelper.ExecuteNonQuery("delete from todolist where id=" + list[0]);
+            List<Object> data = JsonConvert.DeserializeObject<List<Object>>(json.ToString());
+            return TodolistHelper.ExecuteNonQuery("delete from todolist where id=" + data[0]);
         }
 
-        public static Object Update(Object data)
+        public static Object Update(Object json)
         {
-            List<TodolistItem> list = JsonConvert.DeserializeObject<List<TodolistItem>>(data.ToString());
-            TodolistItem item = list[0];
-            return TodolistHelper.ExecuteNonQuery("UPDATE TODOLIST SET COMPLETE=" + item.Complete +","+ "TITLE='" +
-                                                  item.Title + "' WHERE ID=" + item.Id);
+            List<Object> data = JsonConvert.DeserializeObject<List<Object>>(json.ToString());
+            return TodolistHelper.ExecuteNonQuery("UPDATE TODOLIST SET COMPLETE=" + data[2] + "," + "TITLE='"+data[1]+"' WHERE ID=" + data[0]);
         }
     }
 }

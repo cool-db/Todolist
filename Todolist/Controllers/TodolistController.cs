@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using System.Web.WebPages;
 using Todolist = Todolist.Models.Todolist;
 
 namespace Todolist.Controllers
@@ -32,9 +33,9 @@ namespace Todolist.Controllers
     public class InsertController : ApiController
     {
         [System.Web.Mvc.HttpPost]
-        public object Post(Object data)
+        public int Post(Object json)
         {
-            return Models.Todolist.Insert(data);
+            return Models.Todolist.Insert(json).ToString().AsInt();
         }
     }
 
@@ -50,18 +51,18 @@ namespace Todolist.Controllers
     public class DeleteController : ApiController
     {
         [System.Web.Mvc.HttpPost]
-        public object Post(Object data)
+        public object Post(Object json)
         {
-            return Models.Todolist.Dalete(data);
+            return Models.Todolist.Dalete(json);
         }
     }
 
     public class UpdateController : ApiController
     {
         [System.Web.Mvc.HttpPost]
-        public object Post(Object data)
+        public object Post(Object json)
         {
-            return Models.Todolist.Update(data);
+            return Models.Todolist.Update(json);
         }
     }
 }
