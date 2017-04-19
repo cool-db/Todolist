@@ -20,7 +20,7 @@ namespace Todolist.Models
         {
             List<Object> data = JsonConvert.DeserializeObject<List<Object>>(json.ToString());
             TodolistHelper.ExecuteNonQuery("insert into todolist(title,complete) values('" + data[0] + "',0)");
-            return TodolistHelper.ExecuteScalar("select INCREASE_SEQUENCE.currval from dual");
+            return TodolistHelper.ExecuteScalar("select increment_sequence.currval from dual");
         }
 
         public static Object Dalete(Object json)
