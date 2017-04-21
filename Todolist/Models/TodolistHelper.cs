@@ -26,7 +26,7 @@ namespace Todolist.Models
                                               ")));Persist Security Info=True;User ID=todolist;Password=todolist;";
 
 
-        public static Object ExecuteReader(string sql)
+        public static Object ExecuteReader(string sql, params OracleParameter[] parameters)
         {
             using (OracleConnection conn = new OracleConnection(connectString))
             {
@@ -43,7 +43,7 @@ namespace Todolist.Models
             }
         }
 
-        public static int ExecuteNonQuery(string sql)
+        public static int ExecuteNonQuery(string sql, params OracleParameter[] parameters)
         {
             using (OracleConnection conn = new OracleConnection(connectString))
             {
@@ -51,12 +51,16 @@ namespace Todolist.Models
                 using (OracleCommand com = conn.CreateCommand())
                 {
                     com.CommandText = sql;
+                    foreach (var parameter in parameters)
+                    {
+                        com.Parameters.Add(parameter);
+                    }
                     return com.ExecuteNonQuery();
                 }
             }
         }
 
-        public static object ExecuteScalar(string sql)
+        public static object ExecuteScalar(string sql, params OracleParameter[] parameters)
         {
             using (OracleConnection conn = new OracleConnection(connectString))
             {
@@ -70,7 +74,7 @@ namespace Todolist.Models
             }
         }
 
-        public static DataTable ExecuteDataTable(string sql)
+        public static DataTable ExecuteDataTable(string sql, params OracleParameter[] parameters)
         {
             using (OracleConnection conn = new OracleConnection(connectString))
             {

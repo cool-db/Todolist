@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.WebPages;
-using Todolist = Todolist.Models.Todolist;
+using Newtonsoft.Json;
+using Oracle.ManagedDataAccess.Client;
+using Todolist.Models;
 
 namespace Todolist.Controllers
 {
@@ -10,12 +12,6 @@ namespace Todolist.Controllers
     {
         [System.Web.Mvc.HttpGet]
         public object GetAll()
-        {
-            return "Success";
-        }
-
-        [System.Web.Mvc.HttpGet]
-        public object GetById(int id)
         {
             Dictionary<Object, Object> dic = new Dictionary<Object, Object>();
             dic["string"] = "value1";
@@ -28,6 +24,12 @@ namespace Todolist.Controllers
 
             return dic;
         }
+
+        [System.Web.Mvc.HttpGet]
+        public object GetById(int id)
+        {
+            return id * id;
+        }
     }
 
     public class InsertController : ApiController
@@ -35,7 +37,9 @@ namespace Todolist.Controllers
         [System.Web.Mvc.HttpPost]
         public int Post(Object json)
         {
-            return Models.Todolist.Insert(json).ToString().AsInt();
+            List<Object> data = JsonConvert.DeserializeObject<List<Object>>(json.ToString());
+            TodolistHelper.ExecuteNonQuery("insert into todolist(title,complete) values('" + data[0] + "',0)");
+            return TodolistHelper.ExecuteScalar("select increment_sequence.currval from dual").ToString().AsInt();
         }
     }
 
@@ -44,7 +48,7 @@ namespace Todolist.Controllers
         [System.Web.Mvc.HttpGet]
         public object Get()
         {
-            return Models.Todolist.Select();
+            return TodolistHelper.ExecuteReader("select * from todolist");
         }
     }
 
@@ -53,7 +57,8 @@ namespace Todolist.Controllers
         [System.Web.Mvc.HttpPost]
         public object Post(Object json)
         {
-            return Models.Todolist.Dalete(json);
+            List<Object> data = JsonConvert.DeserializeObject<List<Object>>(json.ToString());
+            return TodolistHelper.ExecuteNonQuery("delete from todolist where id=" + data[0]);
         }
     }
 
@@ -62,7 +67,9 @@ namespace Todolist.Controllers
         [System.Web.Mvc.HttpPost]
         public object Post(Object json)
         {
-            return Models.Todolist.Update(json);
+            List<Object> data = JsonConvert.DeserializeObject<List<Object>>(json.ToString());
+            return TodolistHelper.ExecuteNonQuery("UPDATE TODOLIST SET COMPLETE=:complete,TITLE=:title WHERE ID=:id",
+                new OracleParameter("id",data[0]),new OracleParameter("title",data[1]),new OracleParameter("complete",data[2]));
         }
     }
 }

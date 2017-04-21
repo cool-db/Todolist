@@ -100,7 +100,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\TodolistController.cs" />
     <Compile Include="Global.asax.cs" />
-    <Compile Include="Models\Todolist.cs" />
     <Compile Include="Models\TodolistHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
